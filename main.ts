@@ -11,6 +11,7 @@ import {
 
 // Data Structures 
 type TV = String;
+type watched = boolean;
 type TVList<T>=Pair<T, List<TV>>;
 type Active = boolean;
 const Active = true;
