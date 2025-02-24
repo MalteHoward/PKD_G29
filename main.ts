@@ -17,8 +17,14 @@ type Counter = Number;
 type Status = String;
 type TVList<T>=Pair<T, List<TV>>;
 type Active = boolean;
-const Active = true;
-
+let Active = true;
+type userInput = string;
 while(Active === true){
+    var userInput = prompt('Please chose altarnative: 1. Ding dong \n2. Leave');
+    if(userInput === "1"){
 
+    }
+    else if (userInput === "2"){
+        Active = false
+    }
 }
