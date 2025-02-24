@@ -9,5 +9,6 @@ import {
     type ListGraph, lg_transpose, type MatrixGraph, lg_new
 } from '../lib/graphs';
 
+// type 
 type Movie = String
 type MovieList<T>=Pair<T, List<Movie>>
