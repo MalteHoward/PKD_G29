@@ -25,12 +25,20 @@ type tv_serie = {
 let active = true;
 type userInput = string;
 while(active === true){
-    var userInput = prompt('Please chose altarnative: 1. Ding dong \n2. Leave');
+    let userInput = prompt('Please choose altarnative: 1. Add show \n2. My List\n 3. Quit');
     if(userInput === "1"){
+        userInput = prompt("Bee")
+        if(userInput === "1"){
 
+        }
+        else if(userInput === "2"){
+
+        }
+    }
+    else if(userInput === "2"){
         
     }
-    else if (userInput === "2"){
+    else if (userInput === "3"){
         active = true;
     }
 }
