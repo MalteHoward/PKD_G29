@@ -8,6 +8,8 @@ import {
 import {
     type ListGraph, lg_transpose, type MatrixGraph, lg_new
 } from '../lib/graphs';
+import { hash_id, ph_empty, ph_insert, ph_lookup, ProbingHashtable } 
+from '../lib/hashtables';
 
 // Data Structures 
 type TV = String;
