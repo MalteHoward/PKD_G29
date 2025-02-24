@@ -22,14 +22,15 @@ type tv_serie = {
 
 }; 
 
-let Active = false;
+let active = true;
 type userInput = string;
-while(Active === true){
+while(active === true){
     var userInput = prompt('Please chose altarnative: 1. Ding dong \n2. Leave');
     if(userInput === "1"){
 
+        
     }
     else if (userInput === "2"){
-        Active = true
+        active = true;
     }
 }
