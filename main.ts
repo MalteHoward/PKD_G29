@@ -10,11 +10,10 @@ import {
 } from '../lib/graphs';
 
 // Data Structures 
-type Movie = String;
-type MovieList<T>=Pair<T, List<Movie>>;
+type TV = String;
+type TVList<T>=Pair<T, List<TV>>;
 type Active = boolean;
 const Active = true;
 while(Active === true){
-    
 
 }
