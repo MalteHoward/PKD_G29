@@ -10,5 +10,11 @@ import {
 } from '../lib/graphs';
 
 // type 
-type Movie = String
-type MovieList<T>=Pair<T, List<Movie>>
+type Movie = String;
+type MovieList<T>=Pair<T, List<Movie>>;
+type Active = boolean;
+const Active = true;
+while(Active === true){
+    
+
+}
