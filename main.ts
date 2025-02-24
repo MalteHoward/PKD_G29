@@ -39,6 +39,6 @@ while(active === true){
         
     }
     else if (userInput === "3"){
-        active = true;
+        active = false;
     }
 }
