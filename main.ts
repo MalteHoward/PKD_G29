@@ -13,10 +13,12 @@ from '../lib/hashtables';
 
 // Data Structures 
 type TV = String;
-type watched = boolean;
+type Counter = Number;
+type Status = String;
 type TVList<T>=Pair<T, List<TV>>;
 type Active = boolean;
 const Active = true;
+
 while(Active === true){
 
 }
