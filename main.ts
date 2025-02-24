@@ -12,12 +12,17 @@ import { hash_id, ph_empty, ph_insert, ph_lookup, ProbingHashtable }
 from '../lib/hashtables';
 
 // Data Structures 
-type TV = String;
-type Counter = Number;
-type Status = String;
-type TVList<T>=Pair<T, List<TV>>;
-type Active = boolean;
-let Active = true;
+// Data Structures
+type tv_serie = {
+
+    episodes: Number,
+    title: String,
+    counter: Number,
+    status: String,
+
+}; 
+
+let Active = false;
 type userInput = string;
 while(Active === true){
     var userInput = prompt('Please chose altarnative: 1. Ding dong \n2. Leave');
@@ -25,6 +30,6 @@ while(Active === true){
 
     }
     else if (userInput === "2"){
-        Active = false
+        Active = true
     }
 }
