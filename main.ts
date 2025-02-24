@@ -9,7 +9,7 @@ import {
     type ListGraph, lg_transpose, type MatrixGraph, lg_new
 } from '../lib/graphs';
 
-// type 
+// Data Structures 
 type Movie = String;
 type MovieList<T>=Pair<T, List<Movie>>;
 type Active = boolean;
