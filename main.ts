@@ -44,14 +44,14 @@ type media = {
 };
 //Data examples
 let test1: media = {
-  title: "Shrek",
+  title: "shrek",
   episodes: 3,
   counter: 0,
   status: "watchlist",
 };
 
 let test2: media = {
-  title: "Family Guy",
+  title: "family Guy",
   episodes: 24,
   counter: 0,
   status: "watchlist",
@@ -64,12 +64,13 @@ let watchList: Queue<media> = empty();
 let watching: Array<media> = [];
 let completed: Queue<media> = empty();
 let myList = [watchList, watching, completed];
-const prompt = require("prompt-sync")();
+
+const prompt = require("prompt-sync");
 
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
-      "Please choose alternative: 1. Add show \n2. My List\n 3. Quit "
+      "Please choose alternative:\n 1. Add show \n2. My List\n 3. Quit \nOption: "
     );
     if (userInput === "1") {
       // Add show
@@ -96,11 +97,11 @@ function main() {
   }
 }
 
-function searchShow(show: media): media | undefined {
+function searchShow(show: string): media | undefined {
   //search in api
   // found = found in api
   for (let i = 0; i < library.length; i++) {
-    if (library[i] === show) {
+    if ((library[i]).title === show) {
       return library[i];
     } else {
       console.log("Media not found");
