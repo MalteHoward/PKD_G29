@@ -51,7 +51,7 @@ let test1: media = {
 };
 
 let test2: media = {
-  title: "family Guy",
+  title: "family guy",
   episodes: 24,
   counter: 0,
   status: "watchlist",
@@ -66,16 +66,16 @@ let completed: Queue<media> = empty();
 let myList = [watchList, watching, completed];
 
 const prompt = require("prompt-sync")();
-const clear = require("console-clear")();
+const clear = require("console-clear");
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
-      "Please choose alternative:\n 1. Add show \n2. My List\n 3. Quit \nOption: "
+      "Please choose alternative:\n 1. Add show \n2. My List \n 3. Quit \nOption: "
     );
-    clear;
+    clear();
     if (userInput === "1") {
       // Add show
-      let newShow = prompt("seach for show/movie: ").toLowerCase;
+      let newShow = prompt("seach for show/movie: ");
       //search show in api
       let foundShow: media | undefined = searchShow(newShow);
       if (foundShow) {
@@ -86,8 +86,22 @@ function main() {
         console.log("show not found");
       }
     } else if (userInput === "2") {
-      // My list
-      console.log(myList);
+      let whichList = prompt(
+        "Choose list:\n1. Watching \n2. Completed, \n3. Watchlist"
+      );
+      if (whichList === "1") {
+        for (let i = 0; i < watching.length; i++) {
+          console.log(watching[i].title);
+        }
+      } else if (whichList === "2") {
+        completed.forEach((element) => {
+          console.log(element);
+        });
+      } else if (whichList === "3") {
+        watchList.forEach((element) => {
+          console.log(element);
+        });
+      }
       // choice: change show
     } else if (userInput === "3") {
       // Quit
@@ -101,13 +115,15 @@ function main() {
 function searchShow(show: string): media | undefined {
   //search in api
   // found = found in api
-  for (let i = 0; i < library.length; i++) {
+  let found: boolean = false;
+  for (let i = 0; i <= library.length; i++) {
     if (library[i].title === show) {
+      found = false;
       return library[i];
-    } else {
-      console.log("Media not found");
-      return undefined;
     }
+  }
+  if (found === false) {
+    console.log("Media not found");
   }
 
   //   let name: string | media  = found.title;
