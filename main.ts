@@ -65,13 +65,14 @@ let watching: Array<media> = [];
 let completed: Queue<media> = empty();
 let myList = [watchList, watching, completed];
 
-const prompt = require("prompt-sync");
-
+const prompt = require("prompt-sync")();
+const clear = require("console-clear")();
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
       "Please choose alternative:\n 1. Add show \n2. My List\n 3. Quit \nOption: "
     );
+    clear;
     if (userInput === "1") {
       // Add show
       let newShow = prompt("seach for show/movie: ").toLowerCase;
@@ -101,7 +102,7 @@ function searchShow(show: string): media | undefined {
   //search in api
   // found = found in api
   for (let i = 0; i < library.length; i++) {
-    if ((library[i]).title === show) {
+    if (library[i].title === show) {
       return library[i];
     } else {
       console.log("Media not found");
