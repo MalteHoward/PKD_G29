@@ -21,35 +21,25 @@ type media = {
 
 }; 
 
-let active: boolean = true;
-let watchList: Queue<media> = empty();
-let watching: Array<media> = [];
-let watched: Queue<media> = empty();
-let myList = [watchList, watching, watched];
+let active = true;
+type userInput = string;
+function main() {
 while(active === true){
-    let userInput: string | null = prompt('Please choose altarnative: 1. Add show \n2. My List\n 3. Quit');
-    if(userInput === "1"){ // Add show
-        let newShow = prompt("seach for show/movie");
-        //search show in api
-        let foundShow: media | boolean = searchShow(newShow);
-        if(foundShow) {
-            myList.push(foundShow);
+    let userInput = prompt('Please choose altarnative: 1. Add show \n2. My List\n 3. Quit');
+    if(userInput === "1"){
+        userInput = prompt("Bee")
+        if(userInput === "1"){
+
+        }
+        else if(userInput === "2"){
+
         }
     }
-    else if(userInput === "2"){ // My list
-        // Print list
-        // change show
+    else if(userInput === "2"){
+        
     }
-    else if (userInput === "3"){ // Quit
+    else if (userInput === "3"){
         active = false;
     }
 }
-
-function searchShow(show): media | boolean {
-
-    return show;
 }
-
-function statusShow(show): string{
-    return status;
-} 
