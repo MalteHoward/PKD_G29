@@ -50,6 +50,7 @@ let test1: media = {
   status: "watchlist",
 };
 
+
 let test2: media = {
   title: "family guy",
   episodes: 24,
@@ -85,23 +86,9 @@ function main() {
       } else {
         console.log("show not found");
       }
-    } else if (userInput === "2") {
-      let whichList = prompt(
-        "Choose list:\n1. Watching \n2. Completed, \n3. Watchlist"
-      );
-      if (whichList === "1") {
-        for (let i = 0; i < watching.length; i++) {
-          console.log(watching[i].title);
-        }
-      } else if (whichList === "2") {
-        completed.forEach((element) => {
-          console.log(element);
-        });
-      } else if (whichList === "3") {
-        watchList.forEach((element) => {
-          console.log(element);
-        });
-      }
+      }else if (userInput === "2") {
+        yourList();
+  
       // choice: change show
     } else if (userInput === "3") {
       // Quit
@@ -161,6 +148,25 @@ function sortShow(show: media): void {
   } else if (status === "watching") {
     watching.push(show);
   }
+}
+
+function yourList(){
+    let whichList = prompt(
+        "Choose list:\n1. Watching \n2. Completed, \n3. Watchlist");
+    if (whichList === "1") {
+        for (let i = 0; i < watching.length; i++) {
+          console.log(watching[i].title);
+        }
+    } else if (whichList === "2") {
+        for (let i = 0; i < completed[2].length; i++){
+            process.stderr.write((completed[2])[i].title + ", ");
+        }
+    } else if (whichList === "3") {
+        for (let i = 0; i < watchList[2].length; i++){
+            process.stderr.write((watchList[2])[i].title + ", ");
+        }        
+    }
+    console.log("\n");
 }
 
 main();
