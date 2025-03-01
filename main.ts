@@ -76,10 +76,12 @@ function main() {
     clear();
     if (userInput === "1") {
       // Add show
+      clear();
       let newShow = prompt("seach for show/movie: ");
       //search show in api
       let foundShow: media | undefined = searchShow(newShow);
       if (foundShow) {
+        console.log("Avalible episodes: " + foundShow.episodes)
         foundShow.counter = Number(prompt("Episodes watched: "));
         foundShow.status = statusShow(foundShow);
         sortShow(foundShow);
@@ -92,8 +94,13 @@ function main() {
       // choice: change show
     } else if (userInput === "3") {
       // Quit
+      clear();
+
       active = false;
+      console.log("Shutting down...")
     } else {
+        clear();
+
       console.log("Invalid Command");
     }
   }
@@ -132,10 +139,13 @@ function statusShow(show: media): string {
     result = "watchList";
   } else if (counter === episodes) {
     result = "completed";
-  } else {
+  } else if (counter && episodes && counter <= episodes){
     result = "watching";
+  } else {
+    console.log("You entered a higher number of episodes that exists. Show added to completed.")
+    result = "completed"
   }
-  return result;
+  return result
 }
 
 function sortShow(show: media): void {
@@ -143,16 +153,25 @@ function sortShow(show: media): void {
   let status = show.status;
   if (status === "watchlist") {
     enqueue(show, watchList);
+    console.log("Show succsessfully added");
   } else if (status === "completed") {
     enqueue(show, completed);
+    console.log("Show succsessfully added");
   } else if (status === "watching") {
     watching.push(show);
+    console.log("Show succsessfully added");
+  } else {
+    console.log("Show doesnt have valid status");
   }
+  let prom = prompt("") // Så att den inte clearas direkt innan man hinner läsa vad som har gjorts
+  clear();
 }
 
 function yourList(){
+    clear();
     let whichList = prompt(
         "Choose list:\n1. Watching \n2. Completed, \n3. Watchlist");
+        clear();
     if (whichList === "1") {
         for (let i = 0; i < watching.length; i++) {
           console.log(watching[i].title);
@@ -164,7 +183,9 @@ function yourList(){
     } else if (whichList === "3") {
         for (let i = 0; i < watchList[2].length; i++){
             process.stderr.write((watchList[2])[i].title + ", ");
-        }        
+        }
+        
+
     }
     console.log("\n");
 }
