@@ -124,21 +124,29 @@ function yourList() {
     var whichList = prompt("Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n");
     clear();
     if (whichList === "1") {
-        console.log("MyList:");
-        for (var i = 0; i < watching.length; i++) {
-            console.log(watching[i].title);
+        console.log("\nWatching:");
+        for (var _i = 0, library_1 = library; _i < library_1.length; _i++) {
+            var show = library_1[_i];
+            if (show.status === "watching") {
+                console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+            }
         }
     }
     else if (whichList === "2") {
-        console.log("MyList:");
-        for (var i = 0; i < completed[2].length; i++) {
-            process.stderr.write((completed[2])[i].title + ", ");
+        console.log("\nCompleted:");
+        for (var _a = 0, library_2 = library; _a < library_2.length; _a++) {
+            var show = library_2[_a];
+            if (show.status === "completed") {
+                console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+            }
         }
     }
     else if (whichList === "3") {
-        console.log("MyList:");
-        for (var i = 0; i < watchList[2].length; i++) {
-            process.stderr.write((watchList[2])[i].title + ", ");
+        for (var _b = 0, library_3 = library; _b < library_3.length; _b++) {
+            var show = library_3[_b];
+            if (show.status === "watchlist") {
+                console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+            }
         }
     }
     console.log("\n");
