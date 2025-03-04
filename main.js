@@ -24,7 +24,7 @@ var prompt = require("prompt-sync")();
 var clear = require("console-clear");
 function main() {
     while (active === true) {
-        var userInput = prompt("Please choose alternative:\n 1. Add show \n2. My List \n 3. Quit \nOption: ");
+        var userInput = prompt("Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: ");
         clear();
         if (userInput === "1") {
             // Add show
@@ -85,7 +85,7 @@ function statusShow(show) {
     var counter = show.counter;
     var result;
     if (counter === 0) {
-        result = "watchList";
+        result = "watchlist";
     }
     else if (counter === episodes) {
         result = "completed";

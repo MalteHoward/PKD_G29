@@ -71,22 +71,22 @@ const clear = require("console-clear");
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
-      "Please choose alternative:\n 1. Add show \n2. My List \n 3. Quit \nOption: "
+      "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: "
     );
     clear();
     if (userInput === "1") {
       // Add show
       clear();
-      let newShow = prompt("seach for show/movie: ");
+      let newShow = prompt("Search for show/movie: ");
       //search show in api
       let foundShow: media | undefined = searchShow(newShow);
       if (foundShow) {
-        console.log("Avalible episodes: " + foundShow.episodes)
+        console.log("Available episodes: " + foundShow.episodes)
         foundShow.counter = Number(prompt("Episodes watched: "));
         foundShow.status = statusShow(foundShow);
         sortShow(foundShow);
       } else {
-        console.log("show not found");
+        console.log("Show not found");
       }
       }else if (userInput === "2") {
         yourList();
