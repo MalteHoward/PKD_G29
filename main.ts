@@ -136,7 +136,7 @@ function statusShow(show: media): string {
   let counter = show.counter;
   let result: string;
   if (counter === 0) {
-    result = "watchList";
+    result = "watchlist";
   } else if (counter === episodes) {
     result = "completed";
   } else if (counter && episodes && counter <= episodes){
