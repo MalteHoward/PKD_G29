@@ -1,0 +1,12 @@
+{
+  "name": "my-tv-list",
+  "version": "1.0.0",
+  "description": "Program where you can save your current shows/movies and your list of movies you plan to watch",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Malte Howard, Viktor Liljencrantz, Irfan Derman",
+  "license": "",
+  "dependencies": {}
+}
