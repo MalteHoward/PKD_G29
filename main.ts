@@ -64,7 +64,6 @@ let active: boolean = true;
 let watchList: Queue<media> = empty();
 let watching: Array<media> = [];
 let completed: Queue<media> = empty();
-let myList = [watchList, watching, completed];
 
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
@@ -90,7 +89,6 @@ function main() {
       }
       }else if (userInput === "2") {
         yourList();
-  
       // choice: change show
     } else if (userInput === "3") {
       // Quit
@@ -142,7 +140,7 @@ function statusShow(show: media): string {
   } else if (counter && episodes && counter <= episodes){
     result = "watching";
   } else {
-    console.log("You entered a higher number of episodes that exists. Show added to completed.")
+    console.log("You entered a number higher than the number of episodes that exists. Show added to completed.")
     result = "completed"
   }
   return result
@@ -153,13 +151,13 @@ function sortShow(show: media): void {
   let status = show.status;
   if (status === "watchlist") {
     enqueue(show, watchList);
-    console.log("Show succsessfully added");
+    console.log("Show successfully added");
   } else if (status === "completed") {
     enqueue(show, completed);
-    console.log("Show succsessfully added");
+    console.log("Show successfully added");
   } else if (status === "watching") {
     watching.push(show);
-    console.log("Show succsessfully added");
+    console.log("Show successfully added");
   } else {
     console.log("Show doesnt have valid status");
   }
@@ -170,17 +168,20 @@ function sortShow(show: media): void {
 function yourList(){
     clear();
     let whichList = prompt(
-        "Choose list:\n1. Watching \n2. Completed, \n3. Watchlist");
+        "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n");
         clear();
     if (whichList === "1") {
+        console.log("MyList:")
         for (let i = 0; i < watching.length; i++) {
           console.log(watching[i].title);
         }
     } else if (whichList === "2") {
+        console.log("MyList:")
         for (let i = 0; i < completed[2].length; i++){
             process.stderr.write((completed[2])[i].title + ", ");
         }
     } else if (whichList === "3") {
+        console.log("MyList:")
         for (let i = 0; i < watchList[2].length; i++){
             process.stderr.write((watchList[2])[i].title + ", ");
         }

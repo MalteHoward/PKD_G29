@@ -19,7 +19,6 @@ var active = true;
 var watchList = (0, queue_array_1.empty)();
 var watching = [];
 var completed = (0, queue_array_1.empty)();
-var myList = [watchList, watching, completed];
 var prompt = require("prompt-sync")();
 var clear = require("console-clear");
 function main() {
@@ -29,17 +28,17 @@ function main() {
         if (userInput === "1") {
             // Add show
             clear();
-            var newShow = prompt("seach for show/movie: ");
+            var newShow = prompt("Search for show/movie: ");
             //search show in api
             var foundShow = searchShow(newShow);
             if (foundShow) {
-                console.log("Avalible episodes: " + foundShow.episodes);
+                console.log("Available episodes: " + foundShow.episodes);
                 foundShow.counter = Number(prompt("Episodes watched: "));
                 foundShow.status = statusShow(foundShow);
                 sortShow(foundShow);
             }
             else {
-                console.log("show not found");
+                console.log("Show not found");
             }
         }
         else if (userInput === "2") {
@@ -94,7 +93,7 @@ function statusShow(show) {
         result = "watching";
     }
     else {
-        console.log("You entered a higher number of episodes that exists. Show added to completed.");
+        console.log("You entered a number higher than the number of episodes that exists. Show added to completed.");
         result = "completed";
     }
     return result;
@@ -104,15 +103,15 @@ function sortShow(show) {
     var status = show.status;
     if (status === "watchlist") {
         (0, queue_array_1.enqueue)(show, watchList);
-        console.log("Show succsessfully added");
+        console.log("Show successfully added");
     }
     else if (status === "completed") {
         (0, queue_array_1.enqueue)(show, completed);
-        console.log("Show succsessfully added");
+        console.log("Show successfully added");
     }
     else if (status === "watching") {
         watching.push(show);
-        console.log("Show succsessfully added");
+        console.log("Show successfully added");
     }
     else {
         console.log("Show doesnt have valid status");
@@ -122,19 +121,22 @@ function sortShow(show) {
 }
 function yourList() {
     clear();
-    var whichList = prompt("Choose list:\n1. Watching \n2. Completed, \n3. Watchlist");
+    var whichList = prompt("Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n");
     clear();
     if (whichList === "1") {
+        console.log("MyList:");
         for (var i = 0; i < watching.length; i++) {
             console.log(watching[i].title);
         }
     }
     else if (whichList === "2") {
+        console.log("MyList:");
         for (var i = 0; i < completed[2].length; i++) {
             process.stderr.write((completed[2])[i].title + ", ");
         }
     }
     else if (whichList === "3") {
+        console.log("MyList:");
         for (var i = 0; i < watchList[2].length; i++) {
             process.stderr.write((watchList[2])[i].title + ", ");
         }
