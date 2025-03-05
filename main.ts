@@ -36,7 +36,6 @@ import {
 } from "../lib/hashtables";
 import {
 getTitleDetailsByName as Name,
-getPersonDetailsByFoundedPersonDetails,
 getPersonDetailsByIMDBId,
 getPersonDetailsByName,
 getPersonDetailsByUrl,
