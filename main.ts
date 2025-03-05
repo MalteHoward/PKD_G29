@@ -34,8 +34,76 @@ import {
   ph_lookup,
   ProbingHashtable,
 } from "../lib/hashtables";
+import {
+getTitleDetailsByName as Name,
+getPersonDetailsByFoundedPersonDetails,
+getPersonDetailsByIMDBId,
+getPersonDetailsByName,
+getPersonDetailsByUrl,
+getTitleDetailsByFoundedTitleDetails,
+getTitleDetailsByIMDBId,
+getTitleDetailsByUrl,
+EpisodeCreditsDetails,
+searchTitleByName as Nameu
+} from 'movier'; // Import the function directly
+import * as fs from 'fs';
+import * as readline from 'readline';
+const prompt = require("prompt-sync")();
+const clear = require("console-clear");
 
-// Data Structures
+//Funkar får ID:t men endast när programmet stängs av, vet ej hut man fixar
+ async function fetchShowID(title:string) {
+  try {
+      clear(); 
+
+      const results = await Nameu(title); 
+
+      if (Array.isArray(results) && results.length > 0) {
+          const firstResult = results[0]; 
+
+          if (firstResult.source) {
+              var sourceId = firstResult.source.sourceId; 
+              console.log(sourceId)
+              searchEpisodesInTSV(sourceId);
+            } else {
+              console.log("No source found for the first entry.");
+          }
+      } else {
+          console.log("No results found.");
+      }
+      
+  } catch (error) {
+      console.error("Error fetching show details:", error);
+  } finally {
+      process.exit(0);
+  }
+}
+//Funkar inte eftersom id:t fixas när programmet är klart
+async function searchEpisodesInTSV(sourceId: string) {
+  const filePath = 'title.episode.tsv'; 
+  let episodeCount = 0;
+
+  const fileStream = fs.createReadStream(filePath);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  });
+
+  for await (const line of rl) {
+    const [tconst, parentTconst, seasonNumber, episodeNumber] = line.split('\t');
+    
+    if (parentTconst === sourceId) {
+      episodeCount++;
+    }
+  }
+
+  console.log(`The show with sourceId "${sourceId}" has ${episodeCount} episodes.`);
+}
+
+const text = prompt("Enter the show title: "); 
+fetchShowID(text);
+
+
 type media = {
   title: string | null;
   episodes: number | null;
@@ -65,8 +133,6 @@ let watchList: Queue<media> = empty();
 let watching: Array<media> = [];
 let completed: Queue<media> = empty();
 
-const prompt = require("prompt-sync")();
-const clear = require("console-clear");
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
