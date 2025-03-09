@@ -1,4 +1,3 @@
-//Irfan gillar pojkar
 import {
   type Pair,
   pair,
@@ -36,48 +35,53 @@ import {
   ProbingHashtable,
 } from "../lib/hashtables";
 import {
-  getTitleDetailsByName as Name,
-  getPersonDetailsByIMDBId,
-  getPersonDetailsByName,
-  getPersonDetailsByUrl,
-  getTitleDetailsByFoundedTitleDetails,
-  getTitleDetailsByIMDBId,
-  getTitleDetailsByUrl,
-  EpisodeCreditsDetails,
-  searchTitleByName as Nameu,
-} from "movier"; // Import the function directly
+getTitleDetailsByName as Name,
+getPersonDetailsByIMDBId,
+getPersonDetailsByName,
+getPersonDetailsByUrl,
+getTitleDetailsByFoundedTitleDetails,
+getTitleDetailsByIMDBId,
+getTitleDetailsByUrl,
+EpisodeCreditsDetails,
+searchTitleByName as Nameu
+} from 'movier'; // Import the function directly
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
 
 //Funkar får ID:t men endast när programmet stängs av, vet ej hut man fixar
 async function fetchShowID(title: string) {
   try {
-      clear(); 
-      const results = await Nameu(title); 
+      clear();
+      const results = await Nameu(title);
 
       if (results.length > 0) {
-          const firstResult = results[0]; 
+          let firstResult = null; 
 
-          if (firstResult.source) {
-              var showID = firstResult.source.sourceId
-              var showyear = firstResult.titleYear
-              var showtype = firstResult.titleType
-              var name = firstResult.name
-              console.log(showyear)
-              console.log(showtype)
-              console.log(showID)
-              return {showID, showyear, showtype, name};
-            } else {
-              console.log("No source found for the first entry.");
+          for (let i = 0; i < results.length; i++) {
+              if (results[i].name === title) {
+                  firstResult = results[i]; 
+              }
+              
+              
+              if (firstResult && firstResult.source) {
+                  const showID = firstResult.source.sourceId;
+                  const showyear = firstResult.titleYear;
+                  const showtype = firstResult.titleType;
+                  const showTitle = firstResult.name;
+                  const episodes: number = -1;
+                  const counter: number = -1;
+                  const status: string = "";
+
+                  return { showID, showyear, showtype, title: showTitle, episodes, counter, status };
+              }
           }
       } else {
           console.log("No results found.");
       }
-      
+
   } catch (error) {
       console.error("Error fetching show details:", error);
-  
-}
+  }
 }
 
 
@@ -96,7 +100,7 @@ let active: boolean = true;
 let watchList: Queue<media> = empty();
 let watching: Array<media> = [];
 let completed: Queue<media> = empty();
-let library: Array<media> = [];
+let library: Array<media> = []
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
@@ -106,23 +110,41 @@ function main() {
     if (userInput === "1") {
       clear();
   
-      let newShow = prompt("Search for show/movie: ");
-  
+      let newShow = prompt("Search for show/movie: ");  
       let foundShowPromise = fetchShowID(newShow);
-  
+      let to: media
       foundShowPromise
           .then((foundShow) => {
               if (foundShow) {
                 if(foundShow.showtype === "movie") {
-                  let count = prompt()
-                  let movie1: media = {
-                    title: foundShow.name,
+                  let count = parseInt(prompt("Have you watched this movie y/1. n/0."));
+                   to = {
+                    showtype: foundShow.showtype,
+                    title: foundShow.title,
                     showyear: foundShow.showyear,
                     showID: foundShow.showID,
                     episodes: 1,
                     counter: count,
                     status: statusShow(foundShow),
+                    
                   }
+                  library.push(to);
+
+                } else if (foundShow.showtype === "series"){
+                  let epi = parseInt(prompt("How many episodes: "));
+                  let count = parseInt(prompt("Episodes watched: "));
+                  if (foundShow){
+                   to = {
+                    showtype: foundShow.showtype,
+                    title: foundShow.title,
+                    showyear: foundShow.showyear,
+                    showID: foundShow.showID,
+                    episodes: epi,
+                    counter: count,
+                    status: statusShow(foundShow),
+                  }
+                  }
+                  library.push(to);
                 }
               } else {
                   console.log("Show not found.");
@@ -141,9 +163,9 @@ function main() {
       clear();
 
       active = false;
-      console.log("Shutting down...");
+      console.log("Shutting down...")
     } else {
-      clear();
+        clear();
 
       console.log("Invalid Command");
     }
@@ -159,15 +181,13 @@ function statusShow(show: media): string {
     result = "watchlist";
   } else if (counter === episodes) {
     result = "completed";
-  } else if (counter && episodes && counter <= episodes) {
+  } else if (counter && episodes && counter <= episodes){
     result = "watching";
   } else {
-    console.log(
-      "You entered a number higher than the number of episodes that exists. Show added to completed."
-    );
-    result = "completed";
+    console.log("You entered a number higher than the number of episodes that exists. Show added to completed.")
+    result = "completed"
   }
-  return result;
+  return result
 }
 
 function sortShow(show: media): void {
@@ -185,57 +205,36 @@ function sortShow(show: media): void {
   } else {
     console.log("Show doesnt have valid status");
   }
-  let prom = prompt(""); // Så att den inte clearas direkt innan man hinner läsa vad som har gjorts
+  let prom = prompt("") // Så att den inte clearas direkt innan man hinner läsa vad som har gjorts
   clear();
 }
 
-function yourList() {
+function yourList(){
   clear();
   let whichList = prompt(
-    "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n"
-  );
-  clear();
+      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n");
+      clear();
   if (whichList === "1") {
     console.log("\nWatching:");
     for (let show of library) {
       if (show.status === "watching") {
-        console.log(
-          show.title +
-            " - " +
-            show.counter +
-            "/" +
-            show.episodes +
-            " episodes watched"
-        );
+        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
   } else if (whichList === "2") {
     console.log("\nCompleted:");
     for (let show of library) {
       if (show.status === "completed") {
-        console.log(
-          show.title +
-            " - " +
-            show.counter +
-            "/" +
-            show.episodes +
-            " episodes watched"
-        );
+        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
   } else if (whichList === "3") {
     for (let show of library) {
       if (show.status === "watchlist") {
-        console.log(
-          show.title +
-            " - " +
-            show.counter +
-            "/" +
-            show.episodes +
-            " episodes watched"
-        );
+        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
+
   }
   console.log("\n");
 }
