@@ -1,3 +1,4 @@
+//Irfan gillar pojkar
 import {
   type Pair,
   pair,
@@ -49,41 +50,47 @@ const prompt = require("prompt-sync")();
 const clear = require("console-clear");
 
 //Funkar får ID:t men endast när programmet stängs av, vet ej hut man fixar
- async function fetchShowID(title:string) {
+async function fetchShowID(title: string) {
   try {
-      clear(); 
-      const results = await Nameu(title); 
+      clear();
+      const results = await Nameu(title);
 
       if (results.length > 0) {
-          const firstResult = results[0]; 
+          let firstResult = null; 
 
-          if (firstResult.source) {
-              var showID = firstResult.source.sourceId
-              var showyear = firstResult.titleYear
-              var showtype = firstResult.titleType
-              var name = firstResult.name
-              console.log(showyear)
-              console.log(showtype)
-              console.log(showID)
-              return {showID, showyear, showtype, name};
-            } else {
-              console.log("No source found for the first entry.");
+          for (let i = 0; i < results.length; i++) {
+              if (results[i].name === title) {
+                  firstResult = results[i]; 
+              }
+              
+              
+              if (firstResult && firstResult.source) {
+                  const showID = firstResult.source.sourceId;
+                  const showyear = firstResult.titleYear;
+                  const showtype = firstResult.titleType;
+                  const showTitle = firstResult.name;
+                  const episodes: number = -1;
+                  const counter: number = -1;
+                  const status: string = "";
+
+                  return { showID, showyear, showtype, title: showTitle, episodes, counter, status };
+              }
           }
       } else {
           console.log("No results found.");
       }
-      
+
   } catch (error) {
       console.error("Error fetching show details:", error);
-  
+  }
 }
-}
+
 
 type media = {
   showtype: string | null;
-  title: string | null;
   showyear: number | null;
-  showID: number | null;
+  showID: string | null;
+  title: string | null;
   episodes: number | null;
   counter: number | null;
   status: string | null;
@@ -104,23 +111,41 @@ function main() {
     if (userInput === "1") {
       clear();
   
-      let newShow = prompt("Search for show/movie: ");
-  
+      let newShow = prompt("Search for show/movie: ");  
       let foundShowPromise = fetchShowID(newShow);
-  
+      let to: media
       foundShowPromise
           .then((foundShow) => {
               if (foundShow) {
                 if(foundShow.showtype === "movie") {
-                  let count = prompt()
-                  let movie1: media = {
-                    title: foundShow.name,
+                  let count = parseInt(prompt("Have you watched this movie y/1. n/0."));
+                   to = {
+                    showtype: foundShow.showtype,
+                    title: foundShow.title,
                     showyear: foundShow.showyear,
                     showID: foundShow.showID,
                     episodes: 1,
                     counter: count,
                     status: statusShow(foundShow),
+                    
                   }
+                  library.push(to);
+
+                } else if (foundShow.showtype === "series"){
+                  let epi = parseInt(prompt("How many episodes: "));
+                  let count = parseInt(prompt("Episodes watched: "));
+                  if (foundShow){
+                   to = {
+                    showtype: foundShow.showtype,
+                    title: foundShow.title,
+                    showyear: foundShow.showyear,
+                    showID: foundShow.showID,
+                    episodes: epi,
+                    counter: count,
+                    status: statusShow(foundShow),
+                  }
+                  }
+                  library.push(to);
                 }
               } else {
                   console.log("Show not found.");
@@ -152,6 +177,7 @@ function statusShow(show: media): string {
   let episodes = show.episodes;
   let counter = show.counter;
   let result: string;
+
   if (counter === 0) {
     result = "watchlist";
   } else if (counter === episodes) {
