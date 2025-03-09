@@ -1,54 +1,9 @@
 import {
-  type Pair,
-  pair,
-  head,
-  tail,
-  list,
-  List,
-  is_null,
-  for_each,
-  filter,
-  enum_list,
-  member,
-  map,
-  accumulate,
-} from "../lib/list";
-import {
-  type Queue,
-  empty,
-  is_empty,
-  enqueue,
-  dequeue,
-  head as qhead,
-} from "../lib/queue_array";
-import {
-  type ListGraph,
-  lg_transpose,
-  type MatrixGraph,
-  lg_new,
-} from "../lib/graphs";
-import {
-  hash_id,
-  ph_empty,
-  ph_insert,
-  ph_lookup,
-  ProbingHashtable,
-} from "../lib/hashtables";
-import {
-getTitleDetailsByName as Name,
-getPersonDetailsByIMDBId,
-getPersonDetailsByName,
-getPersonDetailsByUrl,
-getTitleDetailsByFoundedTitleDetails,
-getTitleDetailsByIMDBId,
-getTitleDetailsByUrl,
-EpisodeCreditsDetails,
 searchTitleByName as Nameu,
 } from 'movier';
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
 
-//Funkar får ID:t men endast när programmet stängs av, vet ej hut man fixar
 async function fetchShowID(title: string) {
   try {
       clear();
@@ -61,19 +16,18 @@ async function fetchShowID(title: string) {
             if (results[i].name === title) {
                   firstResult = results[i]; 
               }
-              
-              
-              if (firstResult && firstResult.source) {
-                  const showID = firstResult.source.sourceId;
-                  const showyear = firstResult.titleYear;
-                  const showtype = firstResult.titleType;
-                  const showTitle = firstResult.name;
-                  const episodes: number = -1;
-                  const counter: number = -1;
-                  const status: string = "";
-                  console.log(showtype);
-                  return { showID, showyear, showtype, showTitle, episodes, counter, status };
-              }
+                
+                if (firstResult && firstResult.source) {
+                    const showID = firstResult.source.sourceId;
+                    const showyear = firstResult.titleYear;
+                    const showtype = firstResult.titleType;
+                    const showTitle = firstResult.name;
+                    const episodes: number = -1;
+                    const counter: number = -1;
+                    const status: string = "";
+                    console.log(showtype);
+                    return { showID, showyear, showtype, showTitle, episodes, counter, status };
+                }
           }
       } else {
           console.log("No results found.");
@@ -113,10 +67,10 @@ async function main() {
       
       if (foundShow) {
         let to: media;
-        
         if (foundShow.showtype === "movie") {
           let count = parseInt(prompt("Have you watched this movie? y/1. n/0: "));
           foundShow.counter = count
+          foundShow.episodes = 1
           to = {
             showtype: foundShow.showtype,
             showTitle: foundShow.showTitle,
@@ -168,7 +122,6 @@ function statusShow(show: media): string {
   let episodes = show.episodes;
   let counter = show.counter;
   let result: string;
-
   if (counter === 0) {
     result = "watchlist";
   } else if (counter === episodes) {
