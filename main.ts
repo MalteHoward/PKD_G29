@@ -45,8 +45,6 @@ getTitleDetailsByUrl,
 EpisodeCreditsDetails,
 searchTitleByName as Nameu
 } from 'movier'; // Import the function directly
-import * as fs from 'fs';
-import * as readline from 'readline';
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
 
@@ -54,16 +52,20 @@ const clear = require("console-clear");
  async function fetchShowID(title:string) {
   try {
       clear(); 
-
       const results = await Nameu(title); 
 
-      if (Array.isArray(results) && results.length > 0) {
+      if (results.length > 0) {
           const firstResult = results[0]; 
 
           if (firstResult.source) {
-              var sourceId = firstResult.source.sourceId; 
-              console.log(sourceId)
-              searchEpisodesInTSV(sourceId);
+              var showID = firstResult.source.sourceId
+              var showyear = firstResult.titleYear
+              var showtype = firstResult.titleType
+              var name = firstResult.name
+              console.log(showyear)
+              console.log(showtype)
+              console.log(showID)
+              return {showID, showyear, showtype, name};
             } else {
               console.log("No source found for the first entry.");
           }
@@ -73,65 +75,26 @@ const clear = require("console-clear");
       
   } catch (error) {
       console.error("Error fetching show details:", error);
-  } finally {
-      process.exit(0);
-  }
+  
 }
-//Funkar inte eftersom id:t fixas när programmet är klart
-async function searchEpisodesInTSV(sourceId: string) {
-  const filePath = 'title.episode.tsv'; 
-  let episodeCount = 0;
-
-  const fileStream = fs.createReadStream(filePath);
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-
-  for await (const line of rl) {
-    const [tconst, parentTconst, seasonNumber, episodeNumber] = line.split('\t');
-    
-    if (parentTconst === sourceId) {
-      episodeCount++;
-    }
-  }
-
-  console.log(`The show with sourceId "${sourceId}" has ${episodeCount} episodes.`);
 }
-
-const text = prompt("Enter the show title: "); 
-fetchShowID(text);
-
 
 type media = {
+  showtype: string | null;
   title: string | null;
+  showyear: number | null;
+  showID: number | null;
   episodes: number | null;
   counter: number | null;
   status: string | null;
 };
 //Data examples
-let test1: media = {
-  title: "shrek",
-  episodes: 3,
-  counter: 0,
-  status: "watchlist",
-};
-
-
-let test2: media = {
-  title: "family guy",
-  episodes: 24,
-  counter: 0,
-  status: "watchlist",
-};
-
-let library = [test1, test2];
 
 let active: boolean = true;
 let watchList: Queue<media> = empty();
 let watching: Array<media> = [];
 let completed: Queue<media> = empty();
-
+let library: Array<media> = []
 function main() {
   while (active === true) {
     let userInput: string | null = prompt(
@@ -139,19 +102,35 @@ function main() {
     );
     clear();
     if (userInput === "1") {
-      // Add show
       clear();
+  
       let newShow = prompt("Search for show/movie: ");
-      //search show in api
-      let foundShow: media | undefined = searchShow(newShow);
-      if (foundShow) {
-        console.log("Available episodes: " + foundShow.episodes)
-        foundShow.counter = Number(prompt("Episodes watched: "));
-        foundShow.status = statusShow(foundShow);
-        sortShow(foundShow);
-      } else {
-        console.log("Show not found");
-      }
+  
+      let foundShowPromise = fetchShowID(newShow);
+  
+      foundShowPromise
+          .then((foundShow) => {
+              if (foundShow) {
+                if(foundShow.showtype === "movie") {
+                  let count = prompt()
+                  let movie1: media = {
+                    title: foundShow.name,
+                    showyear: foundShow.showyear,
+                    showID: foundShow.showID,
+                    episodes: 1,
+                    counter: count,
+                    status: statusShow(foundShow),
+                  }
+                }
+              } else {
+                  console.log("Show not found.");
+              }
+          })
+          .catch((error) => {
+              console.error("Error while fetching show:", error);
+          });
+  
+  
       }else if (userInput === "2") {
         yourList();
       // choice: change show
@@ -167,31 +146,6 @@ function main() {
       console.log("Invalid Command");
     }
   }
-}
-
-function searchShow(show: string): media | undefined {
-  //search in api
-  // found = found in api
-  let found: boolean = false;
-  for (let i = 0; i <= library.length; i++) {
-    if (library[i].title === show) {
-      found = false;
-      return library[i];
-    }
-  }
-  if (found === false) {
-    console.log("Media not found");
-  }
-
-  //   let name: string | media  = found.title;
-  //     name = {
-  //         title = found. title,
-  //         episodes = found.episodes,
-  //         counter = 0,
-  //         status = "Plan to watch";
-
-  //     }
-  //     return name;
 }
 
 function statusShow(show: media): string {
