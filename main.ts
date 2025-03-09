@@ -43,8 +43,8 @@ getTitleDetailsByFoundedTitleDetails,
 getTitleDetailsByIMDBId,
 getTitleDetailsByUrl,
 EpisodeCreditsDetails,
-searchTitleByName as Nameu
-} from 'movier'; // Import the function directly
+searchTitleByName as Nameu,
+} from 'movier';
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
 
@@ -58,7 +58,7 @@ async function fetchShowID(title: string) {
           let firstResult = null; 
 
           for (let i = 0; i < results.length; i++) {
-              if (results[i].name === title) {
+            if (results[i].name === title) {
                   firstResult = results[i]; 
               }
               
@@ -71,8 +71,8 @@ async function fetchShowID(title: string) {
                   const episodes: number = -1;
                   const counter: number = -1;
                   const status: string = "";
-
-                  return { showID, showyear, showtype, title: showTitle, episodes, counter, status };
+                  console.log(showtype);
+                  return { showID, showyear, showtype, showTitle, episodes, counter, status };
               }
           }
       } else {
@@ -89,7 +89,7 @@ type media = {
   showtype: string | null;
   showyear: number | null;
   showID: string | null;
-  title: string | null;
+  showTitle: string | null;
   episodes: number | null;
   counter: number | null;
   status: string | null;
@@ -97,64 +97,56 @@ type media = {
 //Data examples
 
 let active: boolean = true;
-let watchList: Queue<media> = empty();
-let watching: Array<media> = [];
-let completed: Queue<media> = empty();
-let library: Array<media> = []
-function main() {
+let library: Array<media> = [];
+
+async function main() {
   while (active === true) {
     let userInput: string | null = prompt(
       "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: "
     );
     clear();
+    
     if (userInput === "1") {
       clear();
-  
       let newShow = prompt("Search for show/movie: ");  
-      let foundShowPromise = fetchShowID(newShow);
-      let to: media
-      foundShowPromise
-          .then((foundShow) => {
-              if (foundShow) {
-                if(foundShow.showtype === "movie") {
-                  let count = parseInt(prompt("Have you watched this movie y/1. n/0."));
-                   to = {
-                    showtype: foundShow.showtype,
-                    title: foundShow.title,
-                    showyear: foundShow.showyear,
-                    showID: foundShow.showID,
-                    episodes: 1,
-                    counter: count,
-                    status: statusShow(foundShow),
-                    
-                  }
-                  library.push(to);
-
-                } else if (foundShow.showtype === "series"){
-                  let epi = parseInt(prompt("How many episodes: "));
-                  let count = parseInt(prompt("Episodes watched: "));
-                  if (foundShow){
-                   to = {
-                    showtype: foundShow.showtype,
-                    title: foundShow.title,
-                    showyear: foundShow.showyear,
-                    showID: foundShow.showID,
-                    episodes: epi,
-                    counter: count,
-                    status: statusShow(foundShow),
-                  }
-                  }
-                  library.push(to);
-                }
-              } else {
-                  console.log("Show not found.");
-              }
-          })
-          .catch((error) => {
-              console.error("Error while fetching show:", error);
-          });
-  
-  
+      let foundShow = await fetchShowID(newShow);
+      
+      if (foundShow) {
+        let to: media;
+        
+        if (foundShow.showtype === "movie") {
+          let count = parseInt(prompt("Have you watched this movie? y/1. n/0: "));
+          foundShow.counter = count
+          to = {
+            showtype: foundShow.showtype,
+            showTitle: foundShow.showTitle,
+            showyear: foundShow.showyear,
+            showID: foundShow.showID,
+            episodes: 1,
+            counter: count,
+            status: statusShow(foundShow),
+          };
+          library.push(to);
+        } else if (foundShow.showtype === "series") {
+          let epi = parseInt(prompt("How many episodes: "));
+          let count = parseInt(prompt("Episodes watched: "));
+          foundShow.episodes = epi
+          foundShow.counter = count
+          to = {
+            showtype: foundShow.showtype,
+            showTitle: foundShow.showTitle,
+            showyear: foundShow.showyear,
+            showID: foundShow.showID,
+            episodes: epi,
+            counter: count,
+            status: statusShow(foundShow),
+          };
+          library.push(to);
+        }
+      } else {
+        console.log("Show not found.");
+      }
+    
       }else if (userInput === "2") {
         yourList();
       // choice: change show
@@ -190,25 +182,6 @@ function statusShow(show: media): string {
   return result
 }
 
-function sortShow(show: media): void {
-  // KOLLA DUBLETTER
-  let status = show.status;
-  if (status === "watchlist") {
-    enqueue(show, watchList);
-    console.log("Show successfully added");
-  } else if (status === "completed") {
-    enqueue(show, completed);
-    console.log("Show successfully added");
-  } else if (status === "watching") {
-    watching.push(show);
-    console.log("Show successfully added");
-  } else {
-    console.log("Show doesnt have valid status");
-  }
-  let prom = prompt("") // Så att den inte clearas direkt innan man hinner läsa vad som har gjorts
-  clear();
-}
-
 function yourList(){
   clear();
   let whichList = prompt(
@@ -218,20 +191,20 @@ function yourList(){
     console.log("\nWatching:");
     for (let show of library) {
       if (show.status === "watching") {
-        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
   } else if (whichList === "2") {
     console.log("\nCompleted:");
     for (let show of library) {
       if (show.status === "completed") {
-        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
   } else if (whichList === "3") {
     for (let show of library) {
       if (show.status === "watchlist") {
-        console.log(show.title + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
       }
     }
 
