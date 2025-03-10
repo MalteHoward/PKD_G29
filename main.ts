@@ -38,10 +38,10 @@ export async function fetchShowID(title: string) {
             if (results[i].name === title) {
                   firstResult = results[i]; 
               } if (firstResult && firstResult.source) {
-                    const showID = firstResult.source.sourceId;
-                    const showyear = firstResult.titleYear;
-                    const showtype = firstResult.titleType;
-                    const showTitle = firstResult.name;
+                    const showID: string = firstResult.source.sourceId;
+                    const showyear: number = firstResult.titleYear;
+                    const showtype: string = firstResult.titleType;
+                    const showTitle: string = firstResult.name;
                     const episodes: number = -1;
                     const counter: number = -1;
                     const status: string = "";
@@ -72,7 +72,7 @@ export async function main() {
     clear();
     if (userInput === "1") {
       clear();
-      let newShow = prompt("Search for show/movie: ");  
+      let newShow: string = prompt("Search for show/movie: ");  
       let foundShow = await fetchShowID(newShow);
       
       if (foundShow) {
@@ -99,8 +99,8 @@ export async function main() {
             };
             library.push(to);
           } else if (foundShow.showtype === "series") {
-            let epi = parseInt(prompt("How many episodes: "));
-            let count = parseInt(prompt("Episodes watched: "));
+            let epi: number = parseInt(prompt("How many episodes: "));
+            let count: number = parseInt(prompt("Episodes watched: "));
             foundShow.episodes = epi
             foundShow.counter = count
             to = {
@@ -171,7 +171,7 @@ export function statusShow(show: media): string {
  */
 export function yourList(){
   clear();
-  let whichList = prompt(
+  let whichList: string = prompt(
       "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to show\n5. Remove show ");
       clear();
   if (whichList === "1") {
