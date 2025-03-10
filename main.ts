@@ -1,24 +1,20 @@
-//Duplicates, (spara i textfil?????), 
+//(spara i textfil?????), 
 import {
 searchTitleByName as Nameu,
 } from 'movier';
+import { dequeue } from '../lib/queue_array';
 const prompt = require("prompt-sync")();
 const clear = require("console-clear");
-
 async function fetchShowID(title: string) {
   try {
       clear();
       const results = await Nameu(title);
-
       if (results.length > 0) {
           let firstResult = null; 
-
           for (let i = 0; i < results.length; i++) {
             if (results[i].name === title) {
                   firstResult = results[i]; 
-              }
-                
-                if (firstResult && firstResult.source) {
+              } if (firstResult && firstResult.source) {
                     const showID = firstResult.source.sourceId;
                     const showyear = firstResult.titleYear;
                     const showtype = firstResult.titleType;
@@ -32,12 +28,10 @@ async function fetchShowID(title: string) {
       } else {
           console.log("No results found.");
       }
-
   } catch (error) {
       console.error("Error fetching show details:", error);
   }
 }
-
 
 type media = {
   showtype: string | null;
@@ -55,52 +49,60 @@ let library: Array<media> = [];
 async function main() {
   while (active === true) {
     let userInput: string | null = prompt(
-      "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: "
-    );
+      "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: ");
     clear();
-    
     if (userInput === "1") {
       clear();
       let newShow = prompt("Search for show/movie: ");  
       let foundShow = await fetchShowID(newShow);
       
       if (foundShow) {
+        let dupe: boolean = false
         let to: media;
-        if (foundShow.showtype === "movie") {
-          let count = parseInt(prompt("Have you watched this movie? y/1. n/0: "));
-          foundShow.counter = count
-          foundShow.episodes = 1
-          to = {
-            showtype: foundShow.showtype,
-            showTitle: foundShow.showTitle,
-            showyear: foundShow.showyear,
-            showID: foundShow.showID,
-            episodes: 1,
-            counter: count,
-            status: statusShow(foundShow),
-          };
-          library.push(to);
-        } else if (foundShow.showtype === "series") {
-          let epi = parseInt(prompt("How many episodes: "));
-          let count = parseInt(prompt("Episodes watched: "));
-          foundShow.episodes = epi
-          foundShow.counter = count
-          to = {
-            showtype: foundShow.showtype,
-            showTitle: foundShow.showTitle,
-            showyear: foundShow.showyear,
-            showID: foundShow.showID,
-            episodes: epi,
-            counter: count,
-            status: statusShow(foundShow),
-          };
-          library.push(to);
+        for(let i = 0; i < library.length; i++){
+          if(library[i].showID === foundShow.showID){
+            dupe = true
+          }
         }
-      } else {
-        console.log("Show not found.");
+        if(dupe === false){
+          if (foundShow.showtype === "movie") {
+            let count = parseInt(prompt("Have you watched this movie? y/1. n/0: "));
+            foundShow.counter = count
+            foundShow.episodes = 1
+            to = {
+              showtype: foundShow.showtype,
+              showTitle: foundShow.showTitle,
+              showyear: foundShow.showyear,
+              showID: foundShow.showID,
+              episodes: 1,
+              counter: count,
+              status: statusShow(foundShow),
+            };
+            library.push(to);
+          } else if (foundShow.showtype === "series") {
+            let epi = parseInt(prompt("How many episodes: "));
+            let count = parseInt(prompt("Episodes watched: "));
+            foundShow.episodes = epi
+            foundShow.counter = count
+            to = {
+              showtype: foundShow.showtype,
+              showTitle: foundShow.showTitle,
+              showyear: foundShow.showyear,
+              showID: foundShow.showID,
+              episodes: epi,
+              counter: count,
+              status: statusShow(foundShow),
+            };
+            library.push(to);
+          }
+        } else if (dupe === true){
+          console.log("Show already in library.")
+        } 
+        else {
+          console.log("Show not found.");
+        }
       }
-    
-      }else if (userInput === "2") {
+  }else if (userInput === "2") {
         yourList();
       // choice: change show
   
@@ -127,9 +129,10 @@ function statusShow(show: media): string {
   } else if (counter === episodes) {
     return show.status = "completed";
   } else if (counter && episodes && counter <= episodes){
-    return show.status = "watching";
+   return show.status = "watching";
   } else {
     console.log("You entered a number higher than the number of episodes that exists. Show added to completed.")
+    show.counter = show.episodes
     return show.status = "completed"
   }
   
@@ -141,23 +144,24 @@ function yourList(){
       "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to added show ");
       clear();
   if (whichList === "1") {
-    console.log("\nWatching:");
+    console.log("Watching:\n");
     for (let show of library) {
       if (show.status === "watching") {
-        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
   } else if (whichList === "2") {
-    console.log("\nCompleted:");
+    console.log("Completed:\n");
     for (let show of library) {
       if (show.status === "completed") {
-        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
   } else if (whichList === "3") {
+    console.log("Watchlist:\n");
     for (let show of library) {
       if (show.status === "watchlist") {
-        console.log(show.showTitle + " - " + show.counter + "/" + show.episodes + " episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
 
@@ -167,8 +171,8 @@ function yourList(){
     for (let i = 0; i < library.length; i++) {
       if (library[i].showTitle === searchedtitle) {
         library[i].counter = library[i].counter! + parseInt(prompt("How many more episodes have you watched: "));
-        console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
         statusShow(library[i])
+        console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
       }
     }
   }
