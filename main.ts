@@ -20,6 +20,15 @@ export let active: boolean = true;
 
 export let library: Array<media> = [];
 
+/**
+ * finds info of requested show/movie in IMDb API
+ * @example 
+ * //fetchShowID("Shrek");
+ * //returns {"tt120202", 2001, movie, "Shrek", -1, -1, ""}
+ * @param {string} title - title of show/movie
+ * @precondition 
+ * @returns the requested show/movie in media format 
+ */
 export async function fetchShowID(title: string) {
   try {
       clear();
@@ -48,6 +57,15 @@ export async function fetchShowID(title: string) {
   }
 }
 
+/**
+ * Provides an interactive menu that allows the user to manage their media library.
+ * 
+ * This function repeatedly prompts the user for input and performs actions accordingly, such as adding new shows to the library and displaying the user's watchlist.
+ * It continues to run until the user chooses to quit.
+ * 
+ * @async
+ * @returns {void}
+ */
 export async function main() {
   while (active === true) {
     let userInput: string | null = prompt(
@@ -122,6 +140,15 @@ export async function main() {
   }
 }
 
+/**
+ * Updates the shows status depending on users watched episodes
+ * @example
+ * statusShow("Breaking Bad");
+ * returns "watchlist", "watching" or "completed" depending on if show.counter >=< show.episodes 
+ * @param show 
+ * @returns new status of show
+ */
+
 export function statusShow(show: media): string {
   let episodes = show.episodes;
   let counter = show.counter;
@@ -139,7 +166,10 @@ export function statusShow(show: media): string {
   }
   
 }
-
+/**
+ * prints the requested list from the users library
+ * @returns {void}
+ */
 export function yourList(){
   clear();
   let whichList = prompt(
