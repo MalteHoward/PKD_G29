@@ -1,14 +1,29 @@
 //(spara i textfil?????), 
 import {
-searchTitleByName as Nameu,
+searchTitleByName,
 } from 'movier';
-import { dequeue } from '../lib/queue_array';
-const prompt = require("prompt-sync")();
-const clear = require("console-clear");
-async function fetchShowID(title: string) {
+export const prompt = require("prompt-sync")();
+
+export const clear = require("console-clear");
+
+export type media = {
+  showtype: string | null;
+  showyear: number | null;
+  showID: string | null;
+  showTitle: string | null;
+  episodes: number | null;
+  counter: number | null;
+  status: string | null;
+};
+
+export let active: boolean = true;
+
+export let library: Array<media> = [];
+
+export async function fetchShowID(title: string) {
   try {
       clear();
-      const results = await Nameu(title);
+      const results = await searchTitleByName(title);
       if (results.length > 0) {
           let firstResult = null; 
           for (let i = 0; i < results.length; i++) {
@@ -33,20 +48,7 @@ async function fetchShowID(title: string) {
   }
 }
 
-type media = {
-  showtype: string | null;
-  showyear: number | null;
-  showID: string | null;
-  showTitle: string | null;
-  episodes: number | null;
-  counter: number | null;
-  status: string | null;
-};
-
-let active: boolean = true;
-let library: Array<media> = [];
-
-async function main() {
+export async function main() {
   while (active === true) {
     let userInput: string | null = prompt(
       "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: ");
@@ -120,7 +122,7 @@ async function main() {
   }
 }
 
-function statusShow(show: media): string {
+export function statusShow(show: media): string {
   let episodes = show.episodes;
   let counter = show.counter;
   let result: string;
@@ -138,10 +140,10 @@ function statusShow(show: media): string {
   
 }
 
-function yourList(){
+export function yourList(){
   clear();
   let whichList = prompt(
-      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to added show ");
+      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to show\n5. Remove show ");
       clear();
   if (whichList === "1") {
     console.log("Watching:\n");
@@ -170,13 +172,12 @@ function yourList(){
     let searchedtitle = prompt("Search for the show you want to edit: ");
     for (let i = 0; i < library.length; i++) {
       if (library[i].showTitle === searchedtitle) {
-        library[i].counter = library[i].counter! + parseInt(prompt("How many more episodes have you watched: "));
+        library[i].counter = library[i].counter! + parseInt(prompt("New episodes watched: "));
         statusShow(library[i])
         console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
       }
     }
   }
-  
 }
 
 main();
