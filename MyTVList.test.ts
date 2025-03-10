@@ -1,50 +1,92 @@
-import { media, clear, prompt, fetchShowID, library, main, active, statusShow, yourList } from './main';
-import { searchTitleByName as Nameu } from "movier";
+import { fetchShowID, statusShow, yourList, library } from "./main";
+import { searchTitleByName, TitleMainType, Source, ISourceDetails } from "movier";
 
-// Mock the prompt function to simulate user input
-jest.mock("prompt-sync", () => {
-  return () => jest.fn();
-});
-
-// Mock the fetchShowID function to return a predefined show
-jest.mock('./main', () => ({
-  ...jest.requireActual('./main'),
-  fetchShowID: jest.fn(),
+// Mock searchTitleByName
+const mockSearchTitleByName = jest.fn() as jest.MockedFunction<typeof searchTitleByName>;
+jest.mock("movier", () => ({
+  searchTitleByName: mockSearchTitleByName,
 }));
 
-describe('Show/Movies adding', () => {
+describe("fetchShowID", () => {
   beforeEach(() => {
-    // Clear the library before each test
-    library.length = 0;
+    mockSearchTitleByName.mockClear(); // Reset mock before each test
   });
 
-  test('Show added and marked as completed', async () => {
-    // Mock the fetchShowID function to return a predefined show
-    (fetchShowID as jest.Mock).mockResolvedValue({
-      showID: '1',
-      showTitle: 'Breaking Bad',
-      showyear: 2008,
-      showtype: 'series',
-      episodes: 62,
-      counter: 62,
-      status: 'completed',
+  it("should return correct media object when a show is found", async () => {
+    // Mock expected response for "The Boys" with correct types
+    mockSearchTitleByName.mockResolvedValue([
+      {
+        source: {
+          sourceId: 'tt1190634',
+          sourceType: Source.IMDB,
+          sourceUrl: 'https://www.imdb.com/title/tt1190634/'
+        },
+        name: 'The Boys',
+        aka: 'The Boys',
+        titleYear: 2019,
+        url: 'https://www.imdb.com/title/tt1190634/',
+        titleType: 'series' as TitleMainType,
+        matchScore: 13,
+        thumbnailImageUrl: 'https://m.media-amazon.com/images/M/MV5BMWJlN2U5MzItNjU4My00NTM2LWFjOWUtOWFiNjg3ZTMxZDY1XkEyXkFqcGc@._V1_QL75_UY74_CR5,0,50,74_.jpg'
+      },
+    ]);
+
+    const result = await fetchShowID("The Boys");
+    expect(result).toEqual({
+      showID: "tt1190634",
+      showyear: 2019,
+      showtype: "series",
+      showTitle: "The Boys",
+      episodes: -1,
+      counter: -1,
+      status: "",
     });
+  });
 
-    // Mock the prompt function to simulate user input
-    const mockPrompt = require("prompt-sync")();
-    mockPrompt.mockReturnValueOnce("1"); // Choose "Add show"
-    mockPrompt.mockReturnValueOnce("Breaking Bad"); // Search for "Breaking Bad"
-    mockPrompt.mockReturnValueOnce("62"); // Number of episodes
-    mockPrompt.mockReturnValueOnce("62"); // Episodes watched
+  it("should return null when no show is found", async () => {
+    // Mock when no result is found
+    mockSearchTitleByName.mockResolvedValue([]);
+    const result = await fetchShowID("NonExistentShow");
+    expect(result).toBeNull();
+  });
+});
 
-    // Run the main function to simulate user interaction
-    await main();
+describe("statusShow", () => {
+  it("should return 'watchlist' if counter is 0", () => {
+    const media = { showtype: 'series', showyear: 2019, showTitle: 'The Boys', showID: "tt1190634" ,episodes: 10, counter: 0, status: "" };
+    expect(statusShow(media)).toBe("watchlist");
+  });
 
-    // Check if the show was added to the library and marked as completed
-    const addedShow = library.find(show => show.showTitle === 'Breaking Bad');
-    expect(addedShow).toBeDefined();
-    expect(addedShow?.status).toBe('completed');
-    expect(addedShow?.counter).toBe(62);
-    expect(addedShow?.episodes).toBe(62);
+  it("should return 'completed' if counter equals episodes", () => {
+    const media = { showtype: 'series', showyear: 2019, showTitle: 'The Boys', showID: "tt1190634" ,episodes: 40, counter: 40, status: "" };
+    expect(statusShow(media)).toBe("completed");
+  });
+
+  it("should return 'watching' if counter is between 1 and episodes", () => {
+    const media = { showtype: 'series', showyear: 2019, showTitle: 'The Boys', showID: "tt1190634" ,episodes: 40, counter: 20, status: "" };
+    expect(statusShow(media)).toBe("watching");
+  });
+
+  it("should set status to 'completed' if counter exceeds episodes", () => {
+    const media = { showtype: 'series', showyear: 2019, showTitle: 'The Boys', showID: "tt1190634" ,episodes: 40, counter: 50, status: "" };
+    expect(statusShow(media)).toBe("completed");
+    expect(media.counter).toBe(40); // Ensure counter is capped at episodes
+  });
+});
+
+describe("yourList", () => {
+  beforeEach(() => {
+    library.length = 0; // Reset library before each test
+    jest.clearAllMocks(); // Reset all mocks, including console.log
+  });
+
+  it("should correctly filter 'watching' shows", () => {
+    library.push(
+      { showtype: 'series', showyear: 2019, showID: "tt1190634" , showTitle: "The Boys", status: "watching", counter: 20, episodes: 40 },
+    );
+
+    console.log = jest.fn();
+    yourList();
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Watching:"));
   });
 });
