@@ -67,8 +67,9 @@ export async function fetchShowID(title: string) {
  */
 export async function main() {
   while (active === true) {
+    console.log("Please choose alternative:\n1. Add show \n2. My List \n3. Quit ")
     let userInput: string | null = prompt(
-      "Please choose alternative:\n1. Add show \n2. My List \n3. Quit \nOption: ");
+      "Option: ");
     clear();
     if (userInput === "1") {
       clear();
@@ -171,8 +172,9 @@ export function statusShow(show: media): string {
  */
 export function yourList(){
   clear();
+  console.log("Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Edit show")
   let whichList: string = prompt(
-      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to show\n5. Remove show ");
+      "Option: ");
       clear();
   if (whichList === "1") {
     console.log("Watching:\n");
@@ -201,7 +203,7 @@ export function yourList(){
     let searchedtitle = prompt("Search for the show you want to edit: ");
     for (let i = 0; i < library.length; i++) {
       if (library[i].showTitle === searchedtitle) {
-        let choice = prompt("Change amount of episodes[1] / Remove show[2]")
+        let choice = prompt("1. Change amount of episodes 2. Remove show: ")
         if (choice === "1") {
           library[i].counter = library[i].counter! + parseInt(prompt("New episodes watched: "));
           statusShow(library[i])
