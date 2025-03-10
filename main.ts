@@ -1,3 +1,4 @@
+//Duplicates, (spara i textfil?????), 
 import {
 searchTitleByName as Nameu,
 } from 'movier';
@@ -25,7 +26,6 @@ async function fetchShowID(title: string) {
                     const episodes: number = -1;
                     const counter: number = -1;
                     const status: string = "";
-                    console.log(showtype);
                     return { showID, showyear, showtype, showTitle, episodes, counter, status };
                 }
           }
@@ -48,7 +48,6 @@ type media = {
   counter: number | null;
   status: string | null;
 };
-//Data examples
 
 let active: boolean = true;
 let library: Array<media> = [];
@@ -104,7 +103,8 @@ async function main() {
       }else if (userInput === "2") {
         yourList();
       // choice: change show
-    } else if (userInput === "3") {
+  
+    }  else if (userInput === "3") {
       // Quit
       clear();
 
@@ -123,22 +123,22 @@ function statusShow(show: media): string {
   let counter = show.counter;
   let result: string;
   if (counter === 0) {
-    result = "watchlist";
+    return show.status = "watchlist";
   } else if (counter === episodes) {
-    result = "completed";
+    return show.status = "completed";
   } else if (counter && episodes && counter <= episodes){
-    result = "watching";
+    return show.status = "watching";
   } else {
     console.log("You entered a number higher than the number of episodes that exists. Show added to completed.")
-    result = "completed"
+    return show.status = "completed"
   }
-  return result
+  
 }
 
 function yourList(){
   clear();
   let whichList = prompt(
-      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n");
+      "Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Add episodes to added show ");
       clear();
   if (whichList === "1") {
     console.log("\nWatching:");
@@ -162,7 +162,17 @@ function yourList(){
     }
 
   }
-  console.log("\n");
+  else if (whichList === "4"){
+    let searchedtitle = prompt("Search for the show you want to edit: ");
+    for (let i = 0; i < library.length; i++) {
+      if (library[i].showTitle === searchedtitle) {
+        library[i].counter = library[i].counter! + parseInt(prompt("How many more episodes have you watched: "));
+        console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
+        statusShow(library[i])
+      }
+    }
+  }
+  
 }
 
 main();
