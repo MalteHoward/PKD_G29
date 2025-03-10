@@ -201,12 +201,21 @@ export function yourList(){
     let searchedtitle = prompt("Search for the show you want to edit: ");
     for (let i = 0; i < library.length; i++) {
       if (library[i].showTitle === searchedtitle) {
-        library[i].counter = library[i].counter! + parseInt(prompt("New episodes watched: "));
-        statusShow(library[i])
-        console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
+        let choice = prompt("Change amount of episodes[1] / Remove show[2]")
+        if (choice === "1") {
+          library[i].counter = library[i].counter! + parseInt(prompt("New episodes watched: "));
+          statusShow(library[i])
+          console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "avalible");
+        }
+        else if (choice === "2") {
+          console.log("You have now removed ", library[i].showTitle);
+          library = library.splice(0,i);
+        } 
       }
     }
   }
-}
+ }
+
+
 
 main();
