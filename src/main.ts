@@ -83,7 +83,7 @@ export async function main() {
         let to: media;
         for(let i = 0; i < library.length; i++){
           if(library[i].showID === foundShow.showID){
-            dupe = true
+            dupe = true;
           }
         }
         if(dupe === false){
