@@ -44,6 +44,7 @@ afterEach(() => {
 });
 
 describe('fetchShowID', () => {
+  //Valid #1
   it('should fetch show details for a valid title', async () => {
     const mockResult = {
       name: "Shrek",
@@ -66,6 +67,7 @@ describe('fetchShowID', () => {
     });
   });
 
+  //Invalid #1
   it('should return undefined for an invalid title', async () => {
     // Mock the API response with no results
     require('movier').searchTitleByName.mockResolvedValue([]);
@@ -77,6 +79,7 @@ describe('fetchShowID', () => {
 });
 
 describe('statusShow', () => {
+  //Valid #2
   it('should return "watchlist" if counter is 0', () => {
     const show: media = {
       showtype: "movie",
@@ -91,6 +94,7 @@ describe('statusShow', () => {
     expect(statusShow(show)).toBe("watchlist");
   });
 
+  //Valid #3
   it('should return "completed" if counter equals episodes', () => {
     const show: media = {
       showtype: "movie",
@@ -105,6 +109,7 @@ describe('statusShow', () => {
     expect(statusShow(show)).toBe("completed");
   });
 
+  //Valid #4
   it('should return "watching" if counter is less than episodes', () => {
     const show: media = {
       showtype: "series",
@@ -119,6 +124,7 @@ describe('statusShow', () => {
     expect(statusShow(show)).toBe("watching");
   });
 
+  //Invalid #2
   it('should return "completed" if counter is greater than episodes', () => {
     const show: media = {
       showtype: "series",
@@ -135,6 +141,8 @@ describe('statusShow', () => {
 });
 
 describe('yourList', () => {
+
+  //Valid #5
   it('should display shows in the "Watching" list', () => {
     // Add a show to the library with status "watching"
     const show: media = {
@@ -157,6 +165,7 @@ describe('yourList', () => {
     expect(console.log).toHaveBeenCalledWith("Breaking Bad (", 2008, ") - ", 10, "/", 62, "episodes watched");
   });
 
+  //Valid #6
   it('should display shows in the "Completed" list', () => {
     // Add a show to the library with status "completed"
     const show: media = {
@@ -179,6 +188,7 @@ describe('yourList', () => {
     expect(console.log).toHaveBeenCalledWith("Breaking Bad (", 2008, ") - ", 62, "/", 62, "episodes watched");
   });
 
+  //Valid #7
   it('should display shows in the "Watchlist" list', () => {
     // Add a show to the library with status "watchlist"
     const show: media = {
@@ -201,6 +211,7 @@ describe('yourList', () => {
     expect(console.log).toHaveBeenCalledWith("Breaking Bad (", 2008, ") - ", 0, "/", 62, "episodes watched");
   });
 
+  //Valid #8
   it('should allow editing a show', () => {
     // Add a show to the library
     const show: media = {
@@ -223,6 +234,7 @@ describe('yourList', () => {
     expect(library[0].counter).toBe(15); // Verify the counter was updated
   });
 
+  //Valid #9
   it('should allow removing a show', () => {
     // Add a show to the library
     const show: media = {
@@ -243,5 +255,28 @@ describe('yourList', () => {
     // Verify the output
     expect(console.log).toHaveBeenCalledWith("You have now removed ", "Breaking Bad");
     expect(library.length).toBe(0); // Verify the show was removed
+  });
+
+  //Borderline #1
+  it('allows removing episodes when minus numbers are entered', () => {
+    // Add a show to the library
+    const show: media = {
+      showtype: "series",
+      showyear: 2008,
+      showID: "tt0903747",
+      showTitle: "Breaking Bad",
+      episodes: 62,
+      counter: 10,
+      status: "watching",
+    };
+    library.push(show);
+
+    // Simulate user choosing option 4 (Edit show)
+    userInputs = ["4", "Breaking Bad", "1", "-5"]; // Set user inputs for this test case
+    yourList();
+
+    // Verify the output
+    expect(console.log).toHaveBeenCalledWith("You have now watched", 5, "out of", 62, "available");
+    expect(library[0].counter).toBe(5); // Verify the counter was updated
   });
 });
