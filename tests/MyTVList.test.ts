@@ -280,3 +280,18 @@ describe('yourList', () => {
     expect(library[0].counter).toBe(5); // Verify the counter was updated
   });
 });
+// Borderline Case #2
+it('when counter entered as a NaN showStatus becomes completed', () => {
+  // Add a show to the library
+  const show: media = {
+    showtype: "series",
+    showyear: 2008,
+    showID: "tt0903747",
+    showTitle: "Breaking Bad",
+    episodes: 62, 
+    counter: NaN, //NaN (Not a Number)
+    status: "",
+  };
+
+  expect(statusShow(show)).toBe("completed");
+});
