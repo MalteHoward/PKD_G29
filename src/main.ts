@@ -162,7 +162,7 @@ export function statusShow(show: media): string {
   } else if (counter && episodes && counter <= episodes){
    return show.status = "watching";
   } else {
-    console.log("You entered a number higher than the number of episodes that exists. Show added to completed.")
+    console.log("The number you entered was larger than ammount of episodes. Show added to completed.")
     show.counter = show.episodes
     return show.status = "completed"
   }
@@ -177,7 +177,7 @@ export function yourList(){
   console.log("Choose list:\n1. Watching \n2. Completed \n3. Watchlist\n4. Edit show")
   let whichList: string = prompt(
       "Option: ");
-      clear();
+    clear();
   if (whichList === "1") {
     console.log("Watching:\n");
     for (let show of library) {
@@ -212,10 +212,11 @@ export function yourList(){
           console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "available");
         }
         else if (choice === "2") {
-          console.log("You have now removed ", library[i].showTitle);
-          library = library.splice(i,0);
+          console.log("You have now removed", library[i].showTitle);
+          library.splice(i , 1);
         } 
       }
     }
   }
- }
+}
+main();
