@@ -13,9 +13,6 @@ beforeEach(() => {
   jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
-afterEach(() => {
-  jest.restoreAllMocks();
-});
 // Mock the prompt-sync module
 let userInputs: string[] = []; // Array to store user inputs for each test case
 jest.mock('prompt-sync', () => {
@@ -27,15 +24,6 @@ jest.mock('prompt-sync', () => {
     if (question === "New episodes watched: ") return userInputs.shift();
     return ""; // Default response
   });
-});
-
-// Mock console-clear
-jest.mock('console-clear', () => jest.fn());
-
-// Suppress console.log during tests
-beforeEach(() => {
-  jest.spyOn(console, 'log').mockImplementation(() => {});
-  userInputs = []; // Reset user inputs before each test
 });
 
 afterEach(() => {
@@ -72,7 +60,7 @@ describe('fetchShowID', () => {
     // Mock the API response with no results
     require('movier').searchTitleByName.mockResolvedValue([]);
 
-    const result = await fetchShowID("InvalidTitle123");
+    const result = await fetchShowID("ThisIsNotAShow");
 
     expect(result).toBeUndefined();
   });
@@ -253,7 +241,7 @@ describe('yourList', () => {
     yourList();
 
     // Verify the output
-    expect(console.log).toHaveBeenCalledWith("You have now removed ", "Breaking Bad");
+    expect(console.log).toHaveBeenCalledWith("You have now removed", "Breaking Bad");
     expect(library.length).toBe(0); // Verify the show was removed
   });
 

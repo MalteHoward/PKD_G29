@@ -56,7 +56,8 @@ export async function fetchShowID(title: string) {
 /**
  * Provides an interactive menu that allows the user to manage their media library.
  * 
- * This function repeatedly prompts the user for input and performs actions accordingly, such as adding new shows to the library and displaying the user's watchlist.
+ * This function repeatedly prompts the user for input and performs actions accordingly, 
+ * such as adding new shows to the library and displaying the user's watchlist.
  * It continues to run until the user chooses to quit.
  * 
  * @async
@@ -182,21 +183,24 @@ export function yourList(){
     console.log("Watching:\n");
     for (let show of library) {
       if (show.status === "watching") {
-        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + 
+          " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
   } else if (whichList === "2") {
     console.log("Completed:\n");
     for (let show of library) {
       if (show.status === "completed") {
-        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + 
+          " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
   } else if (whichList === "3") {
     console.log("Watchlist:\n");
     for (let show of library) {
       if (show.status === "watchlist") {
-        console.log(show.showTitle + " (" , show.showyear , ")" + " - " , show.counter , "/" , show.episodes , "episodes watched");
+        console.log(show.showTitle + " (" , show.showyear , ")" + 
+          " - " , show.counter , "/" , show.episodes , "episodes watched");
       }
     }
 
@@ -209,7 +213,8 @@ export function yourList(){
         if (choice === "1") {
           library[i].counter = library[i].counter! + parseInt(prompt("New episodes watched: "));
           statusShow(library[i])
-          console.log("You have now watched", library[i].counter, "out of",library[i].episodes, "available");
+          console.log("You have now watched", library[i].counter, 
+            "out of",library[i].episodes, "available");
         }
         else if (choice === "2") {
           console.log("You have now removed", library[i].showTitle);
